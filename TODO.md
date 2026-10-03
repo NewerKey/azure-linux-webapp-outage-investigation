@@ -1,0 +1,1 @@
+- Pin the Terraform version per project (mise or tfenv). Commit the pin file and use the same version in CI.
