@@ -9,7 +9,6 @@ variable "location" {
   }
 }
 
-
 variable "name_prefix" {
   description = "Prefix for resource names."
   type        = string
@@ -18,9 +17,9 @@ variable "name_prefix" {
 }
 
 variable "vnet_address_space" {
-  description = "Address prefix for the VM subnet; must be inside the VNet address space."
+  description = "Address prefix for the vm subnet; must be inside the VNet address space."
   type        = string
-  default     = "10.20.1.0/16"
+  default     = "10.20.0.0/16"
 }
 
 variable "subnet_address_prefix" {
@@ -55,5 +54,4 @@ variable "ssh_source_cidr" {
     error_message = "ssh_source_cidr must be a valid IPv4 CIDR, such as an address with /32."
   }
 }
-
 
