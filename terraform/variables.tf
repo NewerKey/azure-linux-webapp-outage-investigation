@@ -3,13 +3,12 @@ variable "location" {
   type        = string
   default     = "polandcentral"
 
+  validation {
+    condition     = contains(["polandcentral"], lower(var.location))
+    error_message = "This lab is currently restricted to polandcentral. Add other confirmed subscription-approved regions before changing it."
+  }
 }
 
-variable "resource_group_name" {
-  description = "Resource group that contains the lab."
-  type        = string
-  default     = "rg-tf-support-outage-lab"
-}
 
 variable "name_prefix" {
   description = "Prefix for resource names."
@@ -21,7 +20,7 @@ variable "name_prefix" {
 variable "vnet_address_space" {
   description = "Address prefix for the VM subnet; must be inside the VNet address space."
   type        = string
-  default     = "10.20.1.0/24"
+  default     = "10.20.1.0/16"
 }
 
 variable "subnet_address_prefix" {
@@ -33,7 +32,7 @@ variable "subnet_address_prefix" {
 variable "vm_size" {
   description = "Azure VM size"
   type        = string
-  default     = "Standard_B1s"
+  default     = "Standard_B2als_v2"
 }
 
 variable "admin_username" {
