@@ -8,10 +8,10 @@ check-env:
 fmt:
 	$(TF) fmt
 
-init: check-env
+init:
 	$(TF) init
 
-validate: check-env
+validate:
 	$(TF) validate
 
 plan: check-env

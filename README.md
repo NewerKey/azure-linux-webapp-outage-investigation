@@ -21,3 +21,5 @@ and perform structured troubleshooting and root cause analysis.
 - Networking
 - Log Analysis
 - Root Cause Analysis
+
+## Cloud Infrastructure Diagram
