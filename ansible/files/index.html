@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Azure Linux Web Application Outage Investigation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #142b3b;
+      --muted: #536775;
+      --paper: #f2f5f7;
+      --accent: #087e8b;
+      --line: #d7e0e5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.6 system-ui, sans-serif;
+    }
+    header {
+      padding: 3rem max(1.25rem, calc((100% - 960px) / 2));
+      background: var(--ink);
+      color: white;
+      border-bottom: 5px solid var(--accent);
+    }
+    header p { margin: 0 0 .5rem; color: #b9dce0; }
+    h1 { max-width: 760px; margin: 0; line-height: 1.15; }
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1.25rem; }
+    section {
+      margin: 1rem 0;
+      padding: 1.5rem;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    h2 { margin-top: 0; }
+    .status { border-left: 5px solid var(--accent); }
+    .label {
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .grid section { margin: 0; }
+    p, li { color: var(--muted); }
+    footer {
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 0 1.25rem 2rem;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p>SUPPORT ENGINEERING | PORTFOLIO LAB</p>
+    <h1>Azure Linux Web Application Outage Investigation</h1>
+  </header>
+  <main>
+    <section class="status">
+      <p class="label">HTTP baseline</p>
+      <h2>Web response received</h2>
+      <p>
+        This static page is served by Nginx on an Ubuntu VM in Azure.
+        A successful response confirms that this HTTP path returned
+        this page; it does not by itself verify DNS, HTTPS, monitoring,
+        or every dependency.
+      </p>
+    </section>
+
+    <div class="grid">
+      <section>
+        <h2>Project objective</h2>
+        <p>
+          Build a repeatable web environment, introduce controlled
+          failures, and investigate them using evidence rather than
+          assumptions.
+        </p>
+      </section>
+      <section>
+        <h2>Lab stack</h2>
+        <ul>
+          <li>Azure networking and Network Security Groups</li>
+          <li>Ubuntu Linux and Nginx</li>
+          <li>Terraform for infrastructure</li>
+          <li>Ansible for host configuration</li>
+        </ul>
+      </section>
+    </div>
+
+    <section>
+      <h2>Investigation areas</h2>
+      <p>
+        Service and startup failures, Linux permissions, network
+        filtering, DNS and TLS, resource pressure, and log analysis.
+        Monitoring scenarios will be added in a later phase.
+      </p>
+    </section>
+
+    <section>
+      <h2>Support workflow</h2>
+      <p>
+        Define expected behavior. Capture actual behavior. Establish
+        scope. Collect evidence. Test a hypothesis. Confirm the root
+        cause. Verify recovery and document prevention.
+      </p>
+    </section>
+  </main>
+  <footer>
+    Training environment | Intentionally non-production
+  </footer>
+</body>
+</html>
