@@ -24,6 +24,12 @@ variable "vnet_address_space" {
   default     = "10.20.1.0/24"
 }
 
+variable "subnet_address_prefix" {
+  description = "Address prefix for the VM subnet; must be inside the VNet address space."
+  type        = string
+  default     = "10.20.1.0/24"
+}
+
 variable "vm_size" {
   description = "Azure VM size"
   type        = string
