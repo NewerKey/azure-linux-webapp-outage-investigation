@@ -4,11 +4,11 @@ A small Azure lab for practicing Linux, web-service, and network troubleshooting
 
 ## Project status
 
-- **Infrastructure:** deployed in Poland Central; Terraform state contains 10 resources.
+- **Infrastructure:** defined in Terraform (10 resources, Poland Central). The lab is destroyed between sessions to avoid cost; see [Rebuild from scratch](#rebuild-from-scratch).
 - **VM:** Ubuntu 22.04.5 LTS, `Standard_B2als_v2`.
 - **Web service:** Nginx 1.18.0, installed and configured by Ansible.
 - **Ansible:** connectivity verified; a second playbook run reported `changed=0`.
-- **Baseline:** Nginx is active, listens on TCP/80, and returned HTTP 200 from both the VM and the external client.
+- **Baseline (last verified 2026-10-04):** Nginx is active, listens on TCP/80, and returned HTTP 200 from both the VM and the external client.
 - **Not implemented yet:** DNS, HTTPS/TLS, Azure Monitor, and Log Analytics.
 
 ## Objectives
@@ -105,13 +105,7 @@ make plan
 make apply
 ```
 
-`make apply` applies the saved plan, so regenerate the plan after configuration changes. To destroy and rebuild the lab, use this order:
-
-```bash
-make destroy
-make plan
-make apply
-```
+`make apply` applies the saved plan, so regenerate the plan after configuration changes. To destroy and rebuild the lab, follow [Rebuild from scratch](#rebuild-from-scratch).
 
 After applying, regenerate the local Ansible inventory from Terraform's `ansible_inventory` output. Keep `ansible/inventory.ini` ignored because it contains the changing public IP.
 
@@ -124,6 +118,64 @@ ansible-playbook site.yml
 ```
 
 The second real playbook run should report `changed=0`. The first run's check-mode preview may not complete successfully on a fresh VM: check mode predicts package installation without installing the service that a later task tries to manage.
+
+## Rebuild from scratch
+
+Use this at the start of a session when the lab has been destroyed. A timed rebuild took about 6 minutes, ending in HTTP 200 (see the [baseline record](commands/day1-baseline-validation.md)).
+
+Relative paths and `>` redirects resolve from the directory you are in, so each step states where to run it.
+
+**0. Once per shell, from anywhere:**
+
+```bash
+export ARM_SUBSCRIPTION_ID="$(az account show --query id -o tsv)"
+export TF_VAR_ssh_public_key="$(cat ~/.ssh/id_azure_lab.pub)"
+```
+
+**1. Provision, from the repository root:**
+
+```bash
+make plan
+make apply
+```
+
+**2. Regenerate the Ansible inventory, from `ansible/`:**
+
+```bash
+cd ansible
+terraform -chdir=../terraform output -raw ansible_inventory > inventory.ini
+```
+
+If the public IP is one you have used before, clear the stale SSH host key:
+
+```bash
+ssh-keygen -R "$(terraform -chdir=../terraform output -raw vm_public_ip)"
+```
+
+**3. Configure Nginx, from `ansible/`:**
+
+```bash
+ansible web -m ping
+ansible-playbook site.yml
+```
+
+**4. Verify from the workstation, not the VM:**
+
+```bash
+curl -I --max-time 5 "http://$(terraform -chdir=../terraform output -raw vm_public_ip)"
+```
+
+Expect `HTTP/1.1 200 OK` and `Server: nginx/1.18.0 (Ubuntu)`. Run `ansible-playbook site.yml` once more to confirm `changed=0`.
+
+**Tear down, from the repository root:**
+
+```bash
+cd ..
+make destroy
+az group exists -n support-outage-lab-rg
+```
+
+`make destroy` asks for a `yes` confirmation. The last command should print `false`. The Azure-created `NetworkWatcherRG` is not removed by it.
 
 ## Baseline validation
 
